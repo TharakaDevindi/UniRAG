@@ -1,0 +1,23 @@
+package com.unirag.security;
+import io.jsonwebtoken.*;
+import org.springframework.stereotype.Component;
+import java.util.*;
+
+@Component
+public class JwtUtil {
+ private final String SECRET = "unirag-secret-key";
+ public String generateToken(String username, String role) {
+  return Jwts.builder()
+   .setSubject(username)
+   .claim("role", role)
+   .setIssuedAt(new Date())
+   .setExpiration(new Date(System.currentTimeMillis()+86400000))
+   .signWith(SignatureAlgorithm.HS512, SECRET)
+   .compact();
+ }
+ public Claims extractAllClaims(String token) {
+  return Jwts.parser().setSigningKey(SECRET)
+   .parseClaimsJws(token)
+   .getBody();
+ }
+}
